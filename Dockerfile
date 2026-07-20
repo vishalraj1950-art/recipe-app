@@ -13,10 +13,14 @@ ARG DEV=false
 
 RUN python -m venv /py &&\
     /py/bin/pip install --upgrade pip &&\
+    apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        build-base postgresql-dev musl-dev && \
     /py/bin/pip install -r  /tmp/requirement.txt &&\
     if [ $DEV = "true" ]; \
         then /py/bin/pip install -r /tmp/requirement.dev.txt;\
     fi&&\
+    apk del .tmp-build-deps && \
     rm -rf /tmp &&\
     adduser \
             --disabled-password \
